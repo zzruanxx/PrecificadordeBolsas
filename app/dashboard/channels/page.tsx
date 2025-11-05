@@ -23,7 +23,7 @@ const mockChannels: Channel[] = [
 ]
 
 export default function ChannelsPage() {
-  const [channels, setChannels] = useState<Channel[]>(mockChannels)
+  const [channels] = useState<Channel[]>(mockChannels)
   const [showAddForm, setShowAddForm] = useState(false)
 
   return (

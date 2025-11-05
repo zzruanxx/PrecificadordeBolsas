@@ -25,7 +25,7 @@ const mockMaterials: Material[] = [
 ]
 
 export default function InventoryPage() {
-  const [materials, setMaterials] = useState<Material[]>(mockMaterials)
+  const [materials] = useState<Material[]>(mockMaterials)
   const [showAddForm, setShowAddForm] = useState(false)
 
   const lowStockMaterials = materials.filter(m => m.stock < m.minStock)

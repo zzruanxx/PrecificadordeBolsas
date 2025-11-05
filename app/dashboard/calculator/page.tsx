@@ -35,7 +35,7 @@ export default function CalculatorPage() {
     setMaterials(materials.filter((m) => m.id !== id))
   }
 
-  const updateMaterial = (id: string, field: keyof Material, value: any) => {
+  const updateMaterial = (id: string, field: keyof Material, value: string | number) => {
     setMaterials(
       materials.map((m) => (m.id === id ? { ...m, [field]: value } : m))
     )
@@ -102,7 +102,7 @@ export default function CalculatorPage() {
                 <CardContent className="space-y-3">
                   {materials.length === 0 ? (
                     <p className="text-sm text-[#666666] text-center py-4">
-                      Nenhum material adicionado. Clique em "Adicionar" para começar.
+                      Nenhum material adicionado. Clique em &quot;Adicionar&quot; para começar.
                     </p>
                   ) : (
                     materials.map((material) => (
