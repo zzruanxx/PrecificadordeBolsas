@@ -1,0 +1,23 @@
+'use client'
+
+import { LogOut, User } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+
+export function Header({ title }: { title: string }) {
+  return (
+    <header className="flex h-16 items-center justify-between border-b border-[#e5e7eb] bg-white px-8">
+      <h2 className="text-2xl font-serif font-semibold text-[#3A5A40]">{title}</h2>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#BC6C25] text-white">
+            <User className="h-4 w-4" />
+          </div>
+          <span className="text-sm font-medium text-[#333333]">Lúcia</span>
+        </div>
+        <Button variant="ghost" size="sm">
+          <LogOut className="h-4 w-4" />
+        </Button>
+      </div>
+    </header>
+  )
+}
