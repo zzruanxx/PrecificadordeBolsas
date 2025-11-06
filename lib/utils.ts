@@ -70,7 +70,7 @@ export function getUnitLabel(unit: MeasurementUnit): string {
     'cm': 'cm (centímetros)',
     'm': 'm (metros)',
     'cm²': 'cm² (centímetros quadrados)',
-    'm²': 'm² (metros quadrados)',
+    'm²': 'cm² (metros quadrados)',
     'un': 'un (unidades)',
     'kg': 'kg (quilogramas)',
     'g': 'g (gramas)',
@@ -78,4 +78,19 @@ export function getUnitLabel(unit: MeasurementUnit): string {
     'ml': 'ml (mililitros)'
   }
   return labels[unit] || unit
+}
+
+export function getConvertibleUnits(unit: MeasurementUnit): MeasurementUnit[] {
+  const conversions: Record<MeasurementUnit, MeasurementUnit[]> = {
+    'cm': ['cm', 'm'],
+    'm': ['m', 'cm'],
+    'cm²': ['cm²', 'm²'],
+    'm²': ['m²', 'cm²'],
+    'kg': ['kg', 'g'],
+    'g': ['g', 'kg'],
+    'l': ['l', 'ml'],
+    'ml': ['ml', 'l'],
+    'un': ['un']
+  }
+  return conversions[unit] || [unit]
 }

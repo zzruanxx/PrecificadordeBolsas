@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Plus, X, CheckCircle2 } from 'lucide-react'
-import { type MeasurementUnit, convertMeasurement } from '@/lib/utils'
+import { type MeasurementUnit, convertMeasurement, getConvertibleUnits } from '@/lib/utils'
 
 interface InventoryMaterial {
   id: number
@@ -264,7 +264,7 @@ export default function CalculatorPage() {
                                 }
                               />
                               
-                              {material.fromInventory && (material.unit === 'm' || material.unit === 'm²') ? (
+                              {material.fromInventory && getConvertibleUnits(material.unit).length > 1 ? (
                                 <select
                                   className="rounded-md border border-[#e5e7eb] px-2 py-1.5 text-sm focus:border-[#3A5A40] focus:outline-none"
                                   value={material.displayUnit}
@@ -272,18 +272,9 @@ export default function CalculatorPage() {
                                     updateMaterial(material.id, 'displayUnit', e.target.value as MeasurementUnit)
                                   }
                                 >
-                                  {material.unit === 'm' && (
-                                    <>
-                                      <option value="m">m</option>
-                                      <option value="cm">cm</option>
-                                    </>
-                                  )}
-                                  {material.unit === 'm²' && (
-                                    <>
-                                      <option value="m²">m²</option>
-                                      <option value="cm²">cm²</option>
-                                    </>
-                                  )}
+                                  {getConvertibleUnits(material.unit).map(unit => (
+                                    <option key={unit} value={unit}>{unit}</option>
+                                  ))}
                                 </select>
                               ) : (
                                 <Input
@@ -299,7 +290,7 @@ export default function CalculatorPage() {
                               <Input
                                 type="number"
                                 step="0.01"
-                                placeholder="R$ unit"
+                                placeholder="R$ por unidade"
                                 value={material.unitCost || ''}
                                 onChange={(e) =>
                                   updateMaterial(
