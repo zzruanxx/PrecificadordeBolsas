@@ -6,29 +6,47 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Plus, Edit, Trash2, AlertCircle } from 'lucide-react'
+import { type MeasurementUnit } from '@/lib/utils'
 
 interface Material {
   id: number
   name: string
   cost: number
-  unit: string
+  unit: MeasurementUnit
   stock: number
   minStock: number
 }
 
 const mockMaterials: Material[] = [
   { id: 1, name: 'Linha de Crochê 100g', cost: 12.5, unit: 'un', stock: 25, minStock: 10 },
-  { id: 2, name: 'Tecido de Algodão (metro)', cost: 28.0, unit: 'm', stock: 15, minStock: 5 },
-  { id: 3, name: 'Zíper 30cm', cost: 3.5, unit: 'un', stock: 8, minStock: 15 },
+  { id: 2, name: 'Tecido de Algodão', cost: 28.0, unit: 'm', stock: 15, minStock: 5 },
+  { id: 3, name: 'Zíper 30cm', cost: 3.5, unit: 'cm', stock: 800, minStock: 150 },
   { id: 4, name: 'Botões Decorativos', cost: 0.8, unit: 'un', stock: 120, minStock: 50 },
-  { id: 5, name: 'Fita de Cetim 1cm', cost: 5.2, unit: 'm', stock: 3, minStock: 10 },
+  { id: 5, name: 'Fita de Cetim', cost: 5.2, unit: 'm', stock: 3, minStock: 10 },
+  { id: 6, name: 'Tecido Especial', cost: 45.0, unit: 'm²', stock: 5, minStock: 2 },
 ]
 
 export default function InventoryPage() {
-  const [materials] = useState<Material[]>(mockMaterials)
+  const [materials, setMaterials] = useState<Material[]>(mockMaterials)
   const [showAddForm, setShowAddForm] = useState(false)
+  const [newMaterial, setNewMaterial] = useState({
+    name: '',
+    cost: 0,
+    unit: 'un' as MeasurementUnit,
+    stock: 0,
+    minStock: 0
+  })
 
   const lowStockMaterials = materials.filter(m => m.stock < m.minStock)
+
+  const handleAddMaterial = () => {
+    if (newMaterial.name && newMaterial.cost > 0) {
+      const newId = Math.max(...materials.map(m => m.id), 0) + 1
+      setMaterials([...materials, { ...newMaterial, id: newId }])
+      setNewMaterial({ name: '', cost: 0, unit: 'un', stock: 0, minStock: 0 })
+      setShowAddForm(false)
+    }
+  }
 
   return (
     <div className="flex flex-col">
@@ -75,13 +93,52 @@ export default function InventoryPage() {
                   Adicionar Novo Material
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <Input placeholder="Nome do Material" />
-                  <Input type="number" placeholder="Preço de Custo (R$)" />
-                  <Input placeholder="Unidade (ex: un, m, kg)" />
-                  <Input type="number" placeholder="Quantidade em Estoque" />
+                  <Input 
+                    placeholder="Nome do Material" 
+                    value={newMaterial.name}
+                    onChange={(e) => setNewMaterial({...newMaterial, name: e.target.value})}
+                  />
+                  <Input 
+                    type="number" 
+                    placeholder="Preço de Custo (R$)" 
+                    value={newMaterial.cost || ''}
+                    onChange={(e) => setNewMaterial({...newMaterial, cost: parseFloat(e.target.value) || 0})}
+                  />
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[#333333]">
+                      Unidade de Medida
+                    </label>
+                    <select 
+                      className="w-full rounded-md border border-[#e5e7eb] px-3 py-2 text-sm focus:border-[#3A5A40] focus:outline-none"
+                      value={newMaterial.unit}
+                      onChange={(e) => setNewMaterial({...newMaterial, unit: e.target.value as MeasurementUnit})}
+                    >
+                      <option value="un">un (unidades)</option>
+                      <option value="cm">cm (centímetros)</option>
+                      <option value="m">m (metros)</option>
+                      <option value="cm²">cm² (centímetros quadrados)</option>
+                      <option value="m²">m² (metros quadrados)</option>
+                      <option value="g">g (gramas)</option>
+                      <option value="kg">kg (quilogramas)</option>
+                      <option value="ml">ml (mililitros)</option>
+                      <option value="l">l (litros)</option>
+                    </select>
+                  </div>
+                  <Input 
+                    type="number" 
+                    placeholder="Quantidade em Estoque" 
+                    value={newMaterial.stock || ''}
+                    onChange={(e) => setNewMaterial({...newMaterial, stock: parseFloat(e.target.value) || 0})}
+                  />
+                  <Input 
+                    type="number" 
+                    placeholder="Estoque Mínimo" 
+                    value={newMaterial.minStock || ''}
+                    onChange={(e) => setNewMaterial({...newMaterial, minStock: parseFloat(e.target.value) || 0})}
+                  />
                 </div>
                 <div className="flex gap-2 mt-4">
-                  <Button>Salvar</Button>
+                  <Button onClick={handleAddMaterial}>Salvar</Button>
                   <Button variant="outline" onClick={() => setShowAddForm(false)}>
                     Cancelar
                   </Button>
