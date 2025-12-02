@@ -2,8 +2,15 @@
 
 import { LogOut, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
 
 export function Header({ title }: { title: string }) {
+  const router = useRouter()
+
+  const handleLogout = () => {
+    router.push('/login')
+  }
+
   return (
     <header className="flex h-16 items-center justify-between border-b border-[#e5e7eb] bg-white px-8">
       <h2 className="text-2xl font-serif font-semibold text-[#3A5A40]">{title}</h2>
@@ -14,7 +21,7 @@ export function Header({ title }: { title: string }) {
           </div>
           <span className="text-sm font-medium text-[#333333]">Lúcia</span>
         </div>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" onClick={handleLogout}>
           <LogOut className="h-4 w-4" />
         </Button>
       </div>
