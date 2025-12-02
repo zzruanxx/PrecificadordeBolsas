@@ -23,8 +23,54 @@ const mockChannels: Channel[] = [
 ]
 
 export default function ChannelsPage() {
-  const [channels] = useState<Channel[]>(mockChannels)
+  const [channels, setChannels] = useState<Channel[]>(mockChannels)
   const [showAddForm, setShowAddForm] = useState(false)
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [newChannel, setNewChannel] = useState({
+    name: '',
+    feePercent: 0,
+    fixedFee: 0
+  })
+
+  const handleAddChannel = () => {
+    if (newChannel.name) {
+      if (editingId) {
+        // Update existing channel
+        setChannels(channels.map(c => 
+          c.id === editingId ? { ...newChannel, id: editingId } : c
+        ))
+        setEditingId(null)
+      } else {
+        // Add new channel
+        const newId = Math.max(...channels.map(c => c.id), 0) + 1
+        setChannels([...channels, { ...newChannel, id: newId }])
+      }
+      setNewChannel({ name: '', feePercent: 0, fixedFee: 0 })
+      setShowAddForm(false)
+    }
+  }
+
+  const handleEditChannel = (channel: Channel) => {
+    setNewChannel({
+      name: channel.name,
+      feePercent: channel.feePercent,
+      fixedFee: channel.fixedFee
+    })
+    setEditingId(channel.id)
+    setShowAddForm(true)
+  }
+
+  const handleDeleteChannel = (id: number) => {
+    if (confirm('Tem certeza que deseja excluir este canal?')) {
+      setChannels(channels.filter(c => c.id !== id))
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setShowAddForm(false)
+    setEditingId(null)
+    setNewChannel({ name: '', feePercent: 0, fixedFee: 0 })
+  }
 
   return (
     <div className="flex flex-col">
@@ -50,20 +96,34 @@ export default function ChannelsPage() {
             <Card className="mb-6">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4 text-[#3A5A40]">
-                  Adicionar Novo Canal
+                  {editingId ? 'Editar Canal' : 'Adicionar Novo Canal'}
                 </h3>
                 <div className="grid grid-cols-3 gap-4">
-                  <Input placeholder="Nome do Canal" className="col-span-2" />
-                  <Input type="number" placeholder="Taxa (%)" />
+                  <Input 
+                    placeholder="Nome do Canal" 
+                    className="col-span-2"
+                    value={newChannel.name}
+                    onChange={(e) => setNewChannel({...newChannel, name: e.target.value})}
+                  />
+                  <Input 
+                    type="number" 
+                    placeholder="Taxa (%)"
+                    value={newChannel.feePercent || ''}
+                    onChange={(e) => setNewChannel({...newChannel, feePercent: parseFloat(e.target.value) || 0})}
+                  />
                   <Input
                     type="number"
                     placeholder="Taxa Fixa (R$)"
                     className="col-span-2"
+                    value={newChannel.fixedFee || ''}
+                    onChange={(e) => setNewChannel({...newChannel, fixedFee: parseFloat(e.target.value) || 0})}
                   />
                 </div>
                 <div className="flex gap-2 mt-4">
-                  <Button>Salvar</Button>
-                  <Button variant="outline" onClick={() => setShowAddForm(false)}>
+                  <Button onClick={handleAddChannel}>
+                    {editingId ? 'Atualizar' : 'Salvar'}
+                  </Button>
+                  <Button variant="outline" onClick={handleCancelEdit}>
                     Cancelar
                   </Button>
                 </div>
@@ -81,10 +141,18 @@ export default function ChannelsPage() {
                       {channel.name}
                     </span>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleEditChannel(channel)}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleDeleteChannel(channel.id)}
+                      >
                         <Trash2 className="h-4 w-4 text-red-500" />
                       </Button>
                     </div>

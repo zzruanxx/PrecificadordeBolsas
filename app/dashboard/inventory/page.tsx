@@ -29,6 +29,7 @@ const mockMaterials: Material[] = [
 export default function InventoryPage() {
   const [materials, setMaterials] = useState<Material[]>(mockMaterials)
   const [showAddForm, setShowAddForm] = useState(false)
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [newMaterial, setNewMaterial] = useState({
     name: '',
     cost: 0,
@@ -41,11 +42,44 @@ export default function InventoryPage() {
 
   const handleAddMaterial = () => {
     if (newMaterial.name && newMaterial.cost > 0) {
-      const newId = Math.max(...materials.map(m => m.id), 0) + 1
-      setMaterials([...materials, { ...newMaterial, id: newId }])
+      if (editingId) {
+        // Update existing material
+        setMaterials(materials.map(m => 
+          m.id === editingId ? { ...newMaterial, id: editingId } : m
+        ))
+        setEditingId(null)
+      } else {
+        // Add new material
+        const newId = Math.max(...materials.map(m => m.id), 0) + 1
+        setMaterials([...materials, { ...newMaterial, id: newId }])
+      }
       setNewMaterial({ name: '', cost: 0, unit: 'un', stock: 0, minStock: 0 })
       setShowAddForm(false)
     }
+  }
+
+  const handleEditMaterial = (material: Material) => {
+    setNewMaterial({
+      name: material.name,
+      cost: material.cost,
+      unit: material.unit,
+      stock: material.stock,
+      minStock: material.minStock
+    })
+    setEditingId(material.id)
+    setShowAddForm(true)
+  }
+
+  const handleDeleteMaterial = (id: number) => {
+    if (confirm('Tem certeza que deseja excluir este material?')) {
+      setMaterials(materials.filter(m => m.id !== id))
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setShowAddForm(false)
+    setEditingId(null)
+    setNewMaterial({ name: '', cost: 0, unit: 'un', stock: 0, minStock: 0 })
   }
 
   return (
@@ -90,7 +124,7 @@ export default function InventoryPage() {
             <Card className="mb-6">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4 text-[#3A5A40]">
-                  Adicionar Novo Material
+                  {editingId ? 'Editar Material' : 'Adicionar Novo Material'}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <Input 
@@ -138,8 +172,10 @@ export default function InventoryPage() {
                   />
                 </div>
                 <div className="flex gap-2 mt-4">
-                  <Button onClick={handleAddMaterial}>Salvar</Button>
-                  <Button variant="outline" onClick={() => setShowAddForm(false)}>
+                  <Button onClick={handleAddMaterial}>
+                    {editingId ? 'Atualizar' : 'Salvar'}
+                  </Button>
+                  <Button variant="outline" onClick={handleCancelEdit}>
                     Cancelar
                   </Button>
                 </div>
@@ -209,10 +245,18 @@ export default function InventoryPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                           <div className="flex gap-2 justify-end">
-                            <Button variant="ghost" size="sm">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleEditMaterial(material)}
+                            >
                               <Edit className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="sm">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleDeleteMaterial(material.id)}
+                            >
                               <Trash2 className="h-4 w-4 text-red-500" />
                             </Button>
                           </div>

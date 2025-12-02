@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Header } from '@/components/header'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Plus, X, CheckCircle2 } from 'lucide-react'
 import { type MeasurementUnit, convertMeasurement, getConvertibleUnits } from '@/lib/utils'
+import { useCalculatorStore } from '@/lib/store'
 
 interface InventoryMaterial {
   id: number
@@ -39,13 +40,21 @@ const mockInventory: InventoryMaterial[] = [
 ]
 
 export default function CalculatorPage() {
-  const [pieceName, setPieceName] = useState('')
-  const [materials, setMaterials] = useState<Material[]>([])
-  const [laborHours, setLaborHours] = useState(0)
+  const {
+    pieceName,
+    materials,
+    laborHours,
+    packagingCost,
+    profitMargin,
+    setPieceName,
+    setMaterials,
+    setLaborHours,
+    setPackagingCost,
+    setProfitMargin,
+  } = useCalculatorStore()
+  
   const [hourlyRate] = useState(25) // From settings
   const [fixedCostPerHour] = useState(5) // From settings
-  const [packagingCost, setPackagingCost] = useState(0)
-  const [profitMargin, setProfitMargin] = useState(30)
   const [inventory, setInventory] = useState<InventoryMaterial[]>(mockInventory)
   const [showInventorySelector, setShowInventorySelector] = useState(false)
   const [saved, setSaved] = useState(false)
