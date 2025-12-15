@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Plus, Edit, Trash2, AlertCircle } from 'lucide-react'
-import { type MeasurementUnit } from '@/lib/utils'
+import { type MeasurementUnit, cn } from '@/lib/utils'
 
 interface Material {
   id: number
@@ -103,12 +103,14 @@ export default function InventoryPage() {
           </div>
 
           {lowStockMaterials.length > 0 && (
-            <Card className="mb-6 border-[#BC6C25] bg-[#FEF3C7]">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-[#BC6C25]" />
+            <Card className="mb-6 border-2 border-[#BC6C25] bg-gradient-to-r from-[#FEF3C7] to-[#FED7AA] shadow-md">
+              <CardContent className="p-5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-[#BC6C25]">
+                    <AlertCircle className="h-5 w-5 text-white" />
+                  </div>
                   <div>
-                    <p className="font-medium text-[#333333]">
+                    <p className="font-semibold text-[#333333]">
                       {lowStockMaterials.length} material(is) com estoque baixo
                     </p>
                     <p className="text-sm text-[#666666]">
@@ -187,31 +189,34 @@ export default function InventoryPage() {
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-[#F9FAFB] border-b border-[#e5e7eb]">
+                  <thead className="bg-gradient-to-r from-[#3A5A40] to-[#556B2F] text-white">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[#666666] uppercase tracking-wider">
+                      <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
                         Material
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[#666666] uppercase tracking-wider">
+                      <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
                         Preço de Custo
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[#666666] uppercase tracking-wider">
+                      <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
                         Unidade
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[#666666] uppercase tracking-wider">
+                      <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
                         Estoque
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[#666666] uppercase tracking-wider">
+                      <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-[#666666] uppercase tracking-wider">
+                      <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider">
                         Ações
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-[#e5e7eb]">
-                    {materials.map((material) => (
-                      <tr key={material.id} className="hover:bg-[#FDFBF6]">
+                    {materials.map((material, index) => (
+                      <tr key={material.id} className={cn(
+                        "transition-colors duration-150 hover:bg-[#f5f3ed]",
+                        index % 2 === 0 ? "bg-white" : "bg-[#FDFBF6]"
+                      )}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-[#333333]">
                             {material.name}
