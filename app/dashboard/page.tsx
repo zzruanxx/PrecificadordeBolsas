@@ -23,70 +23,80 @@ export default function DashboardPage() {
 
           {/* KPI Cards */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-            <Card>
+            <Card className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Peças Calculadas
                 </CardTitle>
-                <FileText className="h-4 w-4 text-[#3A5A40]" />
+                <div className="p-2 rounded-lg bg-[#3A5A40]/10">
+                  <FileText className="h-5 w-5 text-[#3A5A40]" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-[#3A5A40]">12</div>
-                <p className="text-xs text-[#666666]">Este mês</p>
+                <div className="text-3xl font-bold text-[#3A5A40]">12</div>
+                <p className="text-xs text-[#666666] mt-1">Este mês</p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Materiais em Estoque
                 </CardTitle>
-                <Package className="h-4 w-4 text-[#3A5A40]" />
+                <div className="p-2 rounded-lg bg-[#3A5A40]/10">
+                  <Package className="h-5 w-5 text-[#3A5A40]" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-[#3A5A40]">45</div>
-                <p className="text-xs text-[#666666]">Itens cadastrados</p>
+                <div className="text-3xl font-bold text-[#3A5A40]">45</div>
+                <p className="text-xs text-[#666666] mt-1">Itens cadastrados</p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Lucro Médio
                 </CardTitle>
-                <TrendingUp className="h-4 w-4 text-[#22c55e]" />
+                <div className="p-2 rounded-lg bg-green-100">
+                  <TrendingUp className="h-5 w-5 text-[#22c55e]" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-[#22c55e]">35%</div>
-                <p className="text-xs text-[#666666]">Margem de lucro</p>
+                <div className="text-3xl font-bold text-[#22c55e]">35%</div>
+                <p className="text-xs text-[#666666] mt-1">Margem de lucro</p>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Estoque Baixo
                 </CardTitle>
-                <Package className="h-4 w-4 text-[#BC6C25]" />
+                <div className="p-2 rounded-lg bg-orange-100">
+                  <Package className="h-5 w-5 text-[#BC6C25]" />
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-[#BC6C25]">3</div>
-                <p className="text-xs text-[#666666]">Necessitam reposição</p>
+                <div className="text-3xl font-bold text-[#BC6C25]">3</div>
+                <p className="text-xs text-[#666666] mt-1">Necessitam reposição</p>
               </CardContent>
             </Card>
           </div>
 
           {/* Quick Actions */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="hover:shadow-md transition-shadow">
+            <Card className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-[#3A5A40]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calculator className="h-5 w-5 text-[#3A5A40]" />
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-[#3A5A40]/10">
+                    <Calculator className="h-5 w-5 text-[#3A5A40]" />
+                  </div>
                   Calcular Nova Peça
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-[#666666] mb-4">
+                <p className="text-sm text-[#666666] mb-6 leading-relaxed">
                   Crie uma nova ficha técnica com precificação precisa
                 </p>
                 <Link href="/dashboard/calculator">
@@ -95,15 +105,17 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-md transition-shadow">
+            <Card className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-[#BC6C25]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="h-5 w-5 text-[#3A5A40]" />
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-[#BC6C25]/10">
+                    <Package className="h-5 w-5 text-[#BC6C25]" />
+                  </div>
                   Adicionar Material
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-[#666666] mb-4">
+                <p className="text-sm text-[#666666] mb-6 leading-relaxed">
                   Cadastre novos materiais no seu estoque
                 </p>
                 <Link href="/dashboard/inventory">
@@ -114,15 +126,17 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-md transition-shadow">
+            <Card className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1 border-l-4 border-l-[#556B2F]">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-[#3A5A40]" />
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-[#556B2F]/10">
+                    <FileText className="h-5 w-5 text-[#556B2F]" />
+                  </div>
                   Ver Minhas Peças
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-[#666666] mb-4">
+                <p className="text-sm text-[#666666] mb-6 leading-relaxed">
                   Acesse seu catálogo de fichas técnicas salvas
                 </p>
                 <Link href="/dashboard/pieces">
