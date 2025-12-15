@@ -18,23 +18,26 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#FDFBF6] to-[#F5F3E8] p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-4 text-center">
-          <div className="mx-auto">
-            <h1 className="text-3xl font-serif font-bold text-[#3A5A40]">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#FDFBF6] via-[#F5F3E8] to-[#e8e5db] p-4">
+      <Card className="w-full max-w-md shadow-2xl">
+        <CardHeader className="space-y-4 text-center pt-8">
+          <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-[#3A5A40] to-[#556B2F] flex items-center justify-center shadow-lg">
+            <span className="text-2xl font-serif font-bold text-white">L</span>
+          </div>
+          <div>
+            <h1 className="text-3xl font-serif font-bold text-[#3A5A40] mb-2">
               Ateliê Lúcia
             </h1>
+            <CardTitle className="text-xl text-[#333333]">Entrar na sua conta</CardTitle>
           </div>
-          <CardTitle className="text-2xl">Entrar na sua conta</CardTitle>
-          <CardDescription>
+          <CardDescription className="text-[#666666]">
             Gerencie seu ateliê com precisão e eficiência
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+        <CardContent className="px-8 pb-8">
+          <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-medium text-[#333333]">
+              <label className="mb-2 block text-sm font-semibold text-[#333333]">
                 E-mail
               </label>
               <Input
@@ -46,7 +49,7 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-[#333333]">
+              <label className="mb-2 block text-sm font-semibold text-[#333333]">
                 Senha
               </label>
               <Input
@@ -57,14 +60,14 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" size="lg">
+            <Button type="submit" className="w-full mt-6" size="lg">
               Entrar
             </Button>
           </form>
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center border-t pt-6">
             <p className="text-sm text-[#666666]">
               Não tem uma conta?{' '}
-              <a href="#" className="font-medium text-[#3A5A40] hover:underline">
+              <a href="#" className="font-semibold text-[#3A5A40] hover:text-[#556B2F] transition-colors">
                 Cadastre-se
               </a>
             </p>

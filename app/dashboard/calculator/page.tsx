@@ -5,7 +5,7 @@ import { Header } from '@/components/header'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Plus, X, CheckCircle2 } from 'lucide-react'
+import { Plus, X, CheckCircle2, Calculator, Package } from 'lucide-react'
 import { type MeasurementUnit, convertMeasurement, getConvertibleUnits } from '@/lib/utils'
 import { useCalculatorStore } from '@/lib/store'
 
@@ -165,13 +165,18 @@ export default function CalculatorPage() {
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Left Column - Form */}
             <div className="space-y-6">
-              <Card>
+              <Card className="border-l-4 border-l-[#3A5A40]">
                 <CardHeader>
-                  <CardTitle>Ficha Técnica</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-[#3A5A40]/10">
+                      <Calculator className="h-5 w-5 text-[#3A5A40]" />
+                    </div>
+                    Ficha Técnica
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-[#333333]">
+                    <label className="mb-2 block text-sm font-semibold text-[#333333]">
                       Nome da Peça
                     </label>
                     <Input
@@ -183,16 +188,21 @@ export default function CalculatorPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-l-4 border-l-[#BC6C25]">
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>Materiais</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-[#BC6C25]/10">
+                      <Package className="h-5 w-5 text-[#BC6C25]" />
+                    </div>
+                    Materiais
+                  </CardTitle>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={() => setShowInventorySelector(!showInventorySelector)}>
-                      <Plus className="mr-2 h-4 w-4" />
+                      <Plus className="h-4 w-4" />
                       Do Estoque
                     </Button>
                     <Button size="sm" onClick={addMaterial}>
-                      <Plus className="mr-2 h-4 w-4" />
+                      <Plus className="h-4 w-4" />
                       Manual
                     </Button>
                   </div>
@@ -336,9 +346,14 @@ export default function CalculatorPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="border-l-4 border-l-[#556B2F]">
                 <CardHeader>
-                  <CardTitle>Mão de Obra e Custos</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <div className="p-2 rounded-lg bg-[#556B2F]/10">
+                      <Calculator className="h-5 w-5 text-[#556B2F]" />
+                    </div>
+                    Mão de Obra e Custos
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -382,9 +397,9 @@ export default function CalculatorPage() {
 
             {/* Right Column - Results */}
             <div className="space-y-6 lg:sticky lg:top-8 lg:self-start">
-              <Card className="bg-gradient-to-br from-[#3A5A40] to-[#556B2F] text-white">
+              <Card className="bg-gradient-to-br from-[#3A5A40] to-[#556B2F] text-white shadow-xl border-0">
                 <CardHeader>
-                  <CardTitle className="text-white">Análise de Preço</CardTitle>
+                  <CardTitle className="text-white text-2xl">Análise de Preço</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
@@ -432,9 +447,9 @@ export default function CalculatorPage() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="shadow-md">
                 <CardHeader>
-                  <CardTitle>Simulador de Canais</CardTitle>
+                  <CardTitle className="text-xl">Simulador de Canais</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {channels.map((channel) => {
