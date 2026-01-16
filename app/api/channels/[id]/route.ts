@@ -4,13 +4,14 @@ import { supabase } from '@/lib/supabase'
 // GET single channel
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { data, error } = await supabase
       .from('sales_channels')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (error) {
@@ -32,9 +33,10 @@ export async function GET(
 // PUT update channel
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { name, feePercent, fixedFee } = body
 
@@ -45,7 +47,7 @@ export async function PUT(
         fee_percent: feePercent,
         fixed_fee: fixedFee,
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
 
     if (error) {
@@ -67,13 +69,14 @@ export async function PUT(
 // DELETE channel
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { error } = await supabase
       .from('sales_channels')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
 
     if (error) {
       console.error('Error deleting channel:', error)

@@ -4,13 +4,14 @@ import { supabase } from '@/lib/supabase'
 // GET single piece
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { data, error } = await supabase
       .from('pieces')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (error) {
@@ -32,9 +33,10 @@ export async function GET(
 // PUT update piece
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const {
       name,
@@ -57,7 +59,7 @@ export async function PUT(
         production_cost: productionCost,
         suggested_price: suggestedPrice,
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
 
     if (error) {
@@ -79,13 +81,14 @@ export async function PUT(
 // DELETE piece
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { error } = await supabase
       .from('pieces')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
 
     if (error) {
       console.error('Error deleting piece:', error)
