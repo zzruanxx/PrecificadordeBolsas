@@ -51,6 +51,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // TODO: Get authenticated user ID from Supabase Auth
+    // const { data: { user } } = await supabase.auth.getUser()
+    // if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
     // Upsert settings
     const { data, error } = await supabase
       .from('atelier_settings')
@@ -61,6 +65,7 @@ export async function POST(request: NextRequest) {
           fixed_costs: fixedCosts,
           depreciation: depreciation,
           updated_at: new Date().toISOString(),
+          // user_id: user.id, // TODO: Add when auth is implemented
         },
         {
           onConflict: 'user_id',

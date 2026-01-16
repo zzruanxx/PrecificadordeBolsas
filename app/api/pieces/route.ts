@@ -43,6 +43,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // TODO: Get authenticated user ID from Supabase Auth
+    // const { data: { user } } = await supabase.auth.getUser()
+    // if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
     const { data, error } = await supabase
       .from('pieces')
       .insert([
@@ -54,6 +58,7 @@ export async function POST(request: NextRequest) {
           profit_margin: profitMargin || 30,
           production_cost: productionCost,
           suggested_price: suggestedPrice,
+          // user_id: user.id, // TODO: Add when auth is implemented
         },
       ])
       .select()

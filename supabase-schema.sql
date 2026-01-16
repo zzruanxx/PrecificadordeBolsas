@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS sales_channels (
 -- Table for atelier settings (configurações)
 CREATE TABLE IF NOT EXISTS atelier_settings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+  user_id UUID UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
   pro_labore DECIMAL(10,2) NOT NULL,
   hours_per_month INTEGER NOT NULL,
   fixed_costs DECIMAL(10,2) NOT NULL,
