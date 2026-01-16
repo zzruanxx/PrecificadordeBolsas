@@ -99,15 +99,56 @@ npm start
 Para habilitar a persistência de dados:
 
 1. Crie um projeto no [Supabase](https://supabase.com)
-2. Copie as credenciais do projeto
+2. Execute o schema SQL:
+   - Abra o SQL Editor no dashboard do Supabase
+   - Copie e cole o conteúdo de `supabase-schema.sql`
+   - Execute o script para criar todas as tabelas
 3. Configure as variáveis de ambiente:
+
+```bash
+cp .env.local.example .env.local
+# Edite .env.local com suas credenciais do Supabase
+```
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=sua_url_do_supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anonima
 ```
 
-### Schema do Banco de Dados (Sugestão)
+4. Reinicie o servidor de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+### API Endpoints
+
+A aplicação agora possui endpoints REST completos para todos os recursos:
+
+- **Materials (Estoque)**: `/api/materials`
+  - GET, POST, PUT, DELETE
+- **Pieces (Fichas Técnicas)**: `/api/pieces`
+  - GET, POST, PUT, DELETE
+- **Channels (Canais de Venda)**: `/api/channels`
+  - GET, POST, PUT, DELETE
+- **Settings (Configurações)**: `/api/settings`
+  - GET, POST (upsert)
+
+Veja `API_DOCUMENTATION.md` para detalhes completos sobre cada endpoint, incluindo exemplos de requisições e respostas.
+
+### Schema do Banco de Dados
+
+O arquivo `supabase-schema.sql` contém o schema completo do banco de dados, incluindo:
+
+- Tabela `materials` - Materiais do estoque
+- Tabela `sales_channels` - Canais de venda
+- Tabela `atelier_settings` - Configurações do ateliê
+- Tabela `pieces` - Fichas técnicas salvas
+- Políticas de Row Level Security (RLS)
+- Índices para performance
+- Triggers para atualização automática de timestamps
+
+Execute este script no SQL Editor do Supabase para criar todas as tabelas necessárias.
 
 ```sql
 -- Tabela de materiais
@@ -200,14 +241,16 @@ CREATE TABLE pieces (
 - ✅ Design responsivo e acessível
 - ✅ Navegação por sidebar
 - ✅ Cálculos em tempo real
+- ✅ API REST completa para todos os recursos
+- ✅ Schema de banco de dados Supabase
+- ✅ Documentação de API
 
 ## 🔜 Próximos Passos (Para Produção)
 
 - [ ] Integrar autenticação real com Supabase Auth
-- [ ] Implementar CRUD de materiais com persistência
-- [ ] Implementar CRUD de canais de venda
-- [ ] Salvar e carregar fichas técnicas do banco
-- [ ] Persistir configurações do ateliê
+- [x] Implementar API endpoints para todos os recursos
+- [x] Criar schema do banco de dados Supabase
+- [ ] Conectar frontend com API endpoints
 - [ ] Adicionar validação de formulários
 - [ ] Implementar filtros e busca
 - [ ] Adicionar gráficos e relatórios
