@@ -5,16 +5,28 @@ import { Header } from '@/components/header'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Calculator } from 'lucide-react'
+import { Calculator, CheckCircle2 } from 'lucide-react'
+import { useSettingsStore } from '@/lib/store'
 
 export default function SettingsPage() {
-  const [proLabore, setProLabore] = useState(3000)
-  const [hoursPerMonth, setHoursPerMonth] = useState(160)
-  const [fixedCosts, setFixedCosts] = useState(800)
-  const [depreciation, setDepreciation] = useState(200)
+  const settings = useSettingsStore()
+  const [proLabore, setProLabore] = useState(settings.proLabore)
+  const [hoursPerMonth, setHoursPerMonth] = useState(settings.hoursPerMonth)
+  const [fixedCosts, setFixedCosts] = useState(settings.fixedCosts)
+  const [depreciation, setDepreciation] = useState(settings.depreciation)
+  const [saved, setSaved] = useState(false)
 
   const hourlyRate = proLabore / hoursPerMonth
   const fixedCostPerHour = (fixedCosts + depreciation) / hoursPerMonth
+
+  const handleSave = () => {
+    settings.setProLabore(proLabore)
+    settings.setHoursPerMonth(hoursPerMonth)
+    settings.setFixedCosts(fixedCosts)
+    settings.setDepreciation(depreciation)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 3000)
+  }
 
   return (
     <div className="flex flex-col">
@@ -145,7 +157,16 @@ export default function SettingsPage() {
             </Card>
 
             <div className="flex justify-end">
-              <Button size="lg">Salvar Configurações</Button>
+              <Button size="lg" onClick={handleSave}>
+                {saved ? (
+                  <>
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    Salvo!
+                  </>
+                ) : (
+                  'Salvar Configurações'
+                )}
+              </Button>
             </div>
           </div>
         </div>

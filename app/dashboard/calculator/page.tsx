@@ -7,37 +7,18 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Plus, X, CheckCircle2, Calculator, Package } from 'lucide-react'
 import { type MeasurementUnit, convertMeasurement, getConvertibleUnits } from '@/lib/utils'
-import { useCalculatorStore } from '@/lib/store'
-
-interface InventoryMaterial {
-  id: number
-  name: string
-  cost: number
-  unit: MeasurementUnit
-  stock: number
-  minStock: number
-}
+import { useCalculatorStore, useSettingsStore, useInventoryStore, useChannelsStore, usePiecesStore } from '@/lib/store'
 
 interface Material {
   id: string
-  materialId?: number // Reference to inventory material
+  materialId?: number
   name: string
   quantity: number
   unit: MeasurementUnit
   unitCost: number
-  displayUnit: MeasurementUnit // Unit to display (for conversion)
+  displayUnit: MeasurementUnit
   fromInventory: boolean
 }
-
-// Mock inventory materials - in production, this would come from database
-const mockInventory: InventoryMaterial[] = [
-  { id: 1, name: 'Linha de Crochê 100g', cost: 12.5, unit: 'un', stock: 25, minStock: 10 },
-  { id: 2, name: 'Tecido de Algodão', cost: 28.0, unit: 'm', stock: 15, minStock: 5 },
-  { id: 3, name: 'Zíper 30cm', cost: 3.5, unit: 'cm', stock: 800, minStock: 150 },
-  { id: 4, name: 'Botões Decorativos', cost: 0.8, unit: 'un', stock: 120, minStock: 50 },
-  { id: 5, name: 'Fita de Cetim', cost: 5.2, unit: 'm', stock: 3, minStock: 10 },
-  { id: 6, name: 'Tecido Especial', cost: 45.0, unit: 'm²', stock: 5, minStock: 2 },
-]
 
 export default function CalculatorPage() {
   const {
@@ -51,11 +32,17 @@ export default function CalculatorPage() {
     setLaborHours,
     setPackagingCost,
     setProfitMargin,
+    resetCalculator,
   } = useCalculatorStore()
-  
-  const [hourlyRate] = useState(25) // From settings
-  const [fixedCostPerHour] = useState(5) // From settings
-  const [inventory, setInventory] = useState<InventoryMaterial[]>(mockInventory)
+
+  const { proLabore, hoursPerMonth, fixedCosts: fixedCostsMonthly, depreciation } = useSettingsStore()
+  const hourlyRate = proLabore / hoursPerMonth
+  const fixedCostPerHour = (fixedCostsMonthly + depreciation) / hoursPerMonth
+
+  const { materials: inventory, deductStock } = useInventoryStore()
+  const { channels } = useChannelsStore()
+  const { addPiece } = usePiecesStore()
+
   const [showInventorySelector, setShowInventorySelector] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -74,7 +61,7 @@ export default function CalculatorPage() {
     ])
   }
 
-  const addMaterialFromInventory = (invMaterial: InventoryMaterial) => {
+  const addMaterialFromInventory = (invMaterial: typeof inventory[0]) => {
     setMaterials([
       ...materials,
       {
@@ -123,20 +110,28 @@ export default function CalculatorPage() {
   )
 
   const handleSaveProduct = () => {
-    // Update inventory stock
-    const updatedInventory = inventory.map(inv => {
-      const usedMaterial = materials.find(m => m.materialId === inv.id)
-      if (usedMaterial) {
-        return {
-          ...inv,
-          stock: inv.stock - usedMaterial.quantity
-        }
-      }
-      return inv
+    // Deduct used inventory stock
+    const usedFromInventory = materials
+      .filter((m) => m.fromInventory && m.materialId !== undefined)
+      .map((m) => ({ materialId: m.materialId!, quantity: m.quantity }))
+    deductStock(usedFromInventory)
+
+    // Save piece to pieces store
+    addPiece({
+      name: pieceName,
+      materials,
+      laborHours,
+      packagingCost,
+      profitMargin,
+      productionCost: totalProductionCost,
+      suggestedPrice,
     })
-    setInventory(updatedInventory)
+
     setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    setTimeout(() => {
+      setSaved(false)
+      resetCalculator()
+    }, 3000)
   }
   const laborCost = laborHours * hourlyRate
   const fixedCosts = laborHours * fixedCostPerHour
@@ -144,17 +139,10 @@ export default function CalculatorPage() {
   const profitAmount = (totalProductionCost * profitMargin) / 100
   const suggestedPrice = totalProductionCost + profitAmount
 
-  // Channel simulation (example with fixed rates)
-  const channels = [
-    { name: 'Venda Direta', fee: 0, fixedFee: 0 },
-    { name: 'Instagram', fee: 0, fixedFee: 0 },
-    { name: 'Elo7', fee: 18, fixedFee: 0.4 },
-    { name: 'Mercado Livre', fee: 15, fixedFee: 0 },
-  ]
-
-  const calculateChannelPrice = (channel: { fee: number; fixedFee: number }) => {
+  // Channel simulation using channels from store
+  const calculateChannelPrice = (channel: { feePercent: number; fixedFee: number }) => {
     // Price = (Cost + FixedFee) / (1 - Fee%)
-    return (totalProductionCost + channel.fixedFee) / (1 - channel.fee / 100)
+    return (totalProductionCost + channel.fixedFee) / (1 - channel.feePercent / 100)
   }
 
   return (
@@ -468,13 +456,13 @@ export default function CalculatorPage() {
                             <h4 className="font-medium text-[#333333]">
                               {channel.name}
                             </h4>
-                            {channel.fee > 0 && (
-                              <p className="text-xs text-[#666666]">
-                                Taxa: {channel.fee}%
-                                {channel.fixedFee > 0 &&
-                                  ` + R$ ${channel.fixedFee.toFixed(2)}`}
-                              </p>
-                            )}
+                            {channel.feePercent > 0 && (
+                               <p className="text-xs text-[#666666]">
+                                 Taxa: {channel.feePercent}%
+                                 {channel.fixedFee > 0 &&
+                                   ` + R$ ${channel.fixedFee.toFixed(2)}`}
+                               </p>
+                             )}
                           </div>
                           <div className="text-right">
                             <p className="text-lg font-bold text-[#3A5A40]">

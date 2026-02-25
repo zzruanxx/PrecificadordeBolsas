@@ -6,24 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Plus, Edit, Trash2, ShoppingCart } from 'lucide-react'
-
-interface Channel {
-  id: number
-  name: string
-  feePercent: number
-  fixedFee: number
-}
-
-const mockChannels: Channel[] = [
-  { id: 1, name: 'Venda Direta', feePercent: 0, fixedFee: 0 },
-  { id: 2, name: 'Instagram', feePercent: 0, fixedFee: 0 },
-  { id: 3, name: 'Elo7', feePercent: 18, fixedFee: 0.4 },
-  { id: 4, name: 'Mercado Livre', feePercent: 15, fixedFee: 0 },
-  { id: 5, name: 'Shopee', feePercent: 12, fixedFee: 0 },
-]
+import { useChannelsStore, type SalesChannel } from '@/lib/store'
 
 export default function ChannelsPage() {
-  const [channels, setChannels] = useState<Channel[]>(mockChannels)
+  const { channels, addChannel, updateChannel, deleteChannel } = useChannelsStore()
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [newChannel, setNewChannel] = useState({
@@ -35,22 +21,17 @@ export default function ChannelsPage() {
   const handleAddChannel = () => {
     if (newChannel.name) {
       if (editingId) {
-        // Update existing channel
-        setChannels(channels.map(c => 
-          c.id === editingId ? { ...newChannel, id: editingId } : c
-        ))
+        updateChannel(editingId, newChannel)
         setEditingId(null)
       } else {
-        // Add new channel
-        const newId = Math.max(...channels.map(c => c.id), 0) + 1
-        setChannels([...channels, { ...newChannel, id: newId }])
+        addChannel(newChannel)
       }
       setNewChannel({ name: '', feePercent: 0, fixedFee: 0 })
       setShowAddForm(false)
     }
   }
 
-  const handleEditChannel = (channel: Channel) => {
+  const handleEditChannel = (channel: SalesChannel) => {
     setNewChannel({
       name: channel.name,
       feePercent: channel.feePercent,
@@ -62,7 +43,7 @@ export default function ChannelsPage() {
 
   const handleDeleteChannel = (id: number) => {
     if (confirm('Tem certeza que deseja excluir este canal?')) {
-      setChannels(channels.filter(c => c.id !== id))
+      deleteChannel(id)
     }
   }
 
