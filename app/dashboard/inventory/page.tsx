@@ -7,27 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Plus, Edit, Trash2, AlertCircle } from 'lucide-react'
 import { type MeasurementUnit, cn } from '@/lib/utils'
-
-interface Material {
-  id: number
-  name: string
-  cost: number
-  unit: MeasurementUnit
-  stock: number
-  minStock: number
-}
-
-const mockMaterials: Material[] = [
-  { id: 1, name: 'Linha de Crochê 100g', cost: 12.5, unit: 'un', stock: 25, minStock: 10 },
-  { id: 2, name: 'Tecido de Algodão', cost: 28.0, unit: 'm', stock: 15, minStock: 5 },
-  { id: 3, name: 'Zíper 30cm', cost: 3.5, unit: 'cm', stock: 800, minStock: 150 },
-  { id: 4, name: 'Botões Decorativos', cost: 0.8, unit: 'un', stock: 120, minStock: 50 },
-  { id: 5, name: 'Fita de Cetim', cost: 5.2, unit: 'm', stock: 3, minStock: 10 },
-  { id: 6, name: 'Tecido Especial', cost: 45.0, unit: 'm²', stock: 5, minStock: 2 },
-]
+import { useInventoryStore, type InventoryMaterial } from '@/lib/store'
 
 export default function InventoryPage() {
-  const [materials, setMaterials] = useState<Material[]>(mockMaterials)
+  const { materials, addMaterial, updateMaterial, deleteMaterial } = useInventoryStore()
   const [showAddForm, setShowAddForm] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [newMaterial, setNewMaterial] = useState({
@@ -43,22 +26,17 @@ export default function InventoryPage() {
   const handleAddMaterial = () => {
     if (newMaterial.name && newMaterial.cost > 0) {
       if (editingId) {
-        // Update existing material
-        setMaterials(materials.map(m => 
-          m.id === editingId ? { ...newMaterial, id: editingId } : m
-        ))
+        updateMaterial(editingId, newMaterial)
         setEditingId(null)
       } else {
-        // Add new material
-        const newId = Math.max(...materials.map(m => m.id), 0) + 1
-        setMaterials([...materials, { ...newMaterial, id: newId }])
+        addMaterial(newMaterial)
       }
       setNewMaterial({ name: '', cost: 0, unit: 'un', stock: 0, minStock: 0 })
       setShowAddForm(false)
     }
   }
 
-  const handleEditMaterial = (material: Material) => {
+  const handleEditMaterial = (material: InventoryMaterial) => {
     setNewMaterial({
       name: material.name,
       cost: material.cost,
@@ -72,7 +50,7 @@ export default function InventoryPage() {
 
   const handleDeleteMaterial = (id: number) => {
     if (confirm('Tem certeza que deseja excluir este material?')) {
-      setMaterials(materials.filter(m => m.id !== id))
+      deleteMaterial(id)
     }
   }
 
